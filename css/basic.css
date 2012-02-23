@@ -1,0 +1,56 @@
+*{
+	margin:0px;
+	padding:0px;
+}
+#logo {
+	margin: 15px 15px 15px 0;
+}
+#container{
+	width:1000px;
+	margin:30px auto;
+}
+body{
+	font-family:"courier new";
+}
+.editListItem {
+	display:none;
+}
+.hide{
+	display:none;
+}
+#newList{
+	margin:10px 0 10px 0;
+}
+.editing {
+	display:block;
+}
+#lists li {
+	list-style:none;
+}
+hr {
+	margin:10px 0 10px 0;
+}
+.listItem {
+	
+}
+.listItem span:nth-child(2) {
+	font-size:20px;
+	line-height:1.5;
+	padding: 0 25px 0 25px;
+	margin: 5px 0 5px 0;
+	cursor:move;
+}
+.listItem span:nth-child(1){
+	cursor:default;
+	clear:right;
+	width:50px;
+}
+#listContainer{
+	width:400px;
+}
+#manual {
+	margin-top:20px;
+}
+.checked{
+	text-decoration:line-through;
+}
