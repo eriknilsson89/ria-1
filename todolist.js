@@ -54,13 +54,12 @@
             return list.get('order');
         },
 
-        getTodosOnCid: function (list, id) {
+        getTodosByCid: function (list, id) {
             return this.filter(function (list) {
                 return list.get('listModelCid') == id;
             });
         },
-
-
+		
         //This function returns the finished lists. 
         getChecked: function () {
             return this.filter(function (list) {
@@ -205,6 +204,7 @@
 
         //Destroy this model
         clear: function () {
+			//Todo: When you delete a list, also delete its collection of todos.
             this.model.destroy();
         },
 
@@ -307,7 +307,9 @@
         },
 
         initialize: function (opt) {
-
+			
+			listModelCid= this.model.cid;
+				
             _.bindAll(this, "render", "createOnEnter", 'addOne', 'addAll');
             this.collection.bind('add', this.addOne, this, opt.model.cid);
             this.collection.bind('reset', this.addAll, this);
@@ -328,7 +330,8 @@
                 update: function (event, ui) {
                     $('div.todo', this).each(function (i) {
                         var cid = $(this).attr('todo-cid');
-                        console.log(opt);
+                        console.log('below');
+						console.log(opt);
                         listItem = opt.collection.getByCid(cid);
                         listItem.save({
                             order: i + 1
@@ -340,23 +343,15 @@
 
         render: function () {
             //Changed from #todosData
-            sorted = this.collection.getTodosOnCid(this, this.model.cid);
-
+            sorted = this.collection.getTodosByCid(this, listModelCid);
+			
             this.$('#todosData').html(this.template({
                 total: sorted.length,
                 remaining: this.collection.getChecked().length,
             }));
             return this;
         },
-
-        //This function takes collection.models and an id.
-        //It returns all the items with the listByModelCid id.
-        getByListModelCid: function (todos) {
-            return this.collection.filter(function (todos) {
-                return todos.get("listModelCid") === todos.model.cid;
-            });
-        },
-
+		
         addOne: function (todo) {
 
             var view = new TodoView({
@@ -370,31 +365,24 @@
         //Create a new view for each.
         addAll: function () {
 
-            sorted = this.collection.getTodosOnCid(this, this.model.cid);
-            console.log('You clicked model cid ' + this.model.cid);
-            console.log(sorted);
-
+            sorted = this.collection.getTodosByCid(this, this.model.cid);
             _.each(sorted, function (todos, key) {
 
                 var view = new TodoView({
                     model: todos
                 });
-                console.log('add one');
                 this.$('#todos').append(view.render().el);
             });
         },
 
         createOnEnter: function (e) {
-            //Todo: what happens here? this.model.cid
-            console.log('works here ' + this.model.cid);
             var todo = $('#newTodo').val();
             if (!todo || e.keyCode != 13) return;
 
-            console.log('but not here... ' + this.model.cid);
-            console.log(this);
+            console.log('You clicked ' + listModelCid);
             this.collection.create({
                 todo: todo,
-                listModelCid: this.model.cid
+                listModelCid: listModelCid
             });
             this.$('#newTodo').val('');
         },
