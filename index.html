@@ -37,10 +37,10 @@
 	</div>
 	
 	<script type="text/template" id="tmpList">
-		<div class="item"  list-cid="<%= this.model.cid %>" >    
+		<div class="item"  list-cid="<%= this.model.cid %>" >
 			<div class="listItem" >
 			  <span><img src="images/delete.png" alt="" /></span>
-			  <span class="<%= status ? 'unchecked' : '' %>"><%= title %></span>
+			  <span class="listname <%= status ? 'unchecked' : '' %>"><%= title %></span>
 			</div>
 			<div class="editListItem">
 				<input type='text' value='' />
