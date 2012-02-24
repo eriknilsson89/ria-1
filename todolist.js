@@ -1,17 +1,12 @@
 (function ($) {
     ListModel = Backbone.Model.extend({
         defaults: {
-            title: '',
-            order: '',
             status: 'unchecked',
         },
     });
-
+	//Todo: Lägg till order när du skapar ett nytt objekt.
     TodoModel = Backbone.Model.extend({
         defaults: {
-            listModelCid: '',
-            todo: '',
-            order: '',
             status: 'unchecked',
         },
     });
@@ -66,8 +61,8 @@
                 return list.get('checked');
             });
         },
+	//TODO : ListItemview
     });
-
     ListView = Backbone.View.extend({
 
         tagName: "li",
@@ -76,7 +71,7 @@
 
         events: {
             "dblclick .listItem span:nth-child(2)": "edit",
-            "click .listItem span:nth-child(2)": "showTodos",
+            //"click .listItem span:nth-child(2)": "showTodos",
             "click .listItem span:nth-child(1)": "clear",
             "keypress .editListItem input": "updateOnEnter",
             "blur .editListItem input": "close",
@@ -97,7 +92,10 @@
         //When user click list title, we show them the todos
         //for that list.
         showTodos: function (e) {
-            //User click the list title
+            
+			console.log(e.target.parent().parent().attr("list-cid"));
+			this.trigger("zoomtolist", this.model.cid);
+			//User click the list title
             //Display the todolist that is connected to that list model
             //User creates a todo and keypress Enter
             //save the todo with the cid of the correct list model
@@ -223,16 +221,17 @@
             }
         },
     });
-
+	//Todo: listcollectionview
     ListsView = Backbone.View.extend({
 
         el: $("#container"),
 
         template: _.template($("#dataTemplate").html()),
-
+		
         //Events
         events: {
-            "keypress #newList": "createOnEnter"
+            "keypress #newList": "createOnEnter",
+			"click .listItem span:nth-child(2)": "showTodos"
         },
 
         initialize: function (opt) {
@@ -262,6 +261,29 @@
                 }
             });
         },
+		
+		showTodos: function (e) {
+            
+			$('list-cid').$(e.target).parent().parent();
+			this.trigger("zoomtolist", this.model.cid);
+			//User click the list title
+            //Display the todolist that is connected to that list model
+            //User creates a todo and keypress Enter
+            //save the todo with the cid of the correct list model
+            //Loop each todos but display only the ones with the same
+            //cid as the current list model.
+            $('#hide').removeAttr('id');
+            $('#todoContainer input').attr('id', 'newTodo');
+            $('.todoItem').empty();
+            todos = new TodoCollection();
+            //Send the model so you can save the todos with the correct cid, to
+            //connect it to a specific list.
+            this.todosView = new TodosView({
+                collection: todos,
+                model: this.model
+            });
+            this.todosView.render();
+        },
 
         render: function () {
             this.$('#listsData').html(this.template({
@@ -278,6 +300,7 @@
             });
             console.log(view.render().el);
             this.$('#lists').append(view.render().el);
+			//his.view.bind("zoomtolist",this.myFunc);
         },
 
         addAll: function () {
@@ -294,7 +317,7 @@
             this.$('#newList').val('');
         },
     });
-
+	//Full list view
     TodosView = Backbone.View.extend({
 
         el: $("#container"),
@@ -308,7 +331,7 @@
 
         initialize: function (opt) {
 			
-			listModelCid= this.model.cid;
+			this.listModelCid = this.model.cid;
 				
             _.bindAll(this, "render", "createOnEnter", 'addOne', 'addAll');
             this.collection.bind('add', this.addOne, this, opt.model.cid);
@@ -343,7 +366,7 @@
 
         render: function () {
             //Changed from #todosData
-            sorted = this.collection.getTodosByCid(this, listModelCid);
+            sorted = this.collection.getTodosByCid(this, this.listModelCid);
 			
             this.$('#todosData').html(this.template({
                 total: sorted.length,
@@ -379,10 +402,10 @@
             var todo = $('#newTodo').val();
             if (!todo || e.keyCode != 13) return;
 
-            console.log('You clicked ' + listModelCid);
+            console.log('You clicked ' + this.listModelCid);
             this.collection.create({
                 todo: todo,
-                listModelCid: listModelCid
+                listModelCid: this.listModelCid
             });
             this.$('#newTodo').val('');
         },
