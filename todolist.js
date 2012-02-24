@@ -3,7 +3,7 @@
 
 /**********************************************************************************************
 *
-* Följande kan med fördel implemnteras
+* Implementera:
 *		När en lista tas bort skall alla todos också raderas
 *		När en lista är vald skall den markeras
 *		Spara i en databas	
@@ -16,7 +16,7 @@
             status: 'unchecked',
         },
     });
-	//Todo: Lägg till order när du skapar ett nytt objekt.
+
     TodoModel = Backbone.Model.extend({
         defaults: {
             status: 'unchecked',
@@ -60,10 +60,11 @@
         comparator: function (list) {
             return list.get('order');
         },
-
+		
+		//Return only the lists that has requested id
         getTodosByCid: function (list, id) {
             return this.filter(function (list) {
-                return list.get('listModelCid') == id;
+                return list.get('listModelId') == id;
             });
         },
 		
@@ -73,12 +74,10 @@
                 return list.get('checked');
             });
         },
-	//TODO : ListItemview
     });
 
 
     ListItemView = Backbone.View.extend({ // A view for an entry in the lists of lists
-
 
         tagName: "li",
 
@@ -103,11 +102,9 @@
             return this;
         },
 
-
         //Switch classes hide and show functionallity.
         //Then give the inputfield focus.
         edit: function () {
-            console.log('clicked a Title');
             this.$('.listItem').addClass('hide');
             this.$('.editListItem').addClass('editing');
             this.$('input').focus();
@@ -118,8 +115,8 @@
             $(this.el).remove();
         },
 
-        //When the input(edit list title) loses focus, we make it
-        //disappear with help of Css.
+        //When the input(edit listtitle) loses focus, we make it
+        //disappear with the help of Css.
         close: function () {
             $('.listItem').removeClass('hide');
             $('.editListItem').removeClass('editing');
@@ -131,7 +128,7 @@
         },
 
         //Check if the user clicked Enter and then save if
-        //the value in the input field is not empty. Remove the added classes 
+        //a value exists in the input field. Remove the added classes 
         //to show and hide the correct fields.
         updateOnEnter: function (e) {
             if (e.keyCode == 13) {
@@ -193,16 +190,17 @@
 
         //Destroy this model
         clear: function () {
-			//Todo: When you delete a list, also delete its collection of todos.
             this.model.destroy();
         },
-
+		
+		//Count collection and return the lenght
 		nextOrder: function() {
 			if (!this.length) return 1;
 			return this.collection.lenght + 1;
 		},
-        //Check if the user clicked Enter and then save if
-        //the value in the input field is not empty. Remove the added classes 
+		
+        //Check if the user clicked enter and then save if
+        //a value exists in the input. Remove the added classes 
         //to show and hide the correct fields.
         updateOnEnter: function (e) {
             if (e.keyCode == 13) {
@@ -218,7 +216,6 @@
 
     ListCollectionView = Backbone.View.extend({
 
-
         el: $("#container"),
 
         template: _.template($("#dataTemplate").html()),
@@ -229,9 +226,9 @@
             "click .listItem span:nth-child(2)": "showList" // flyttad till ListCollectionView
 
         },
-
+		
+		//Send upwards in backbone hierarchy. Let the router handle it!
 		showList: function(e){
-			console.log("WOO",e.target);
 			cid = $(e.target).parent().parent().attr("list-cid");
 			this.trigger("showlist",cid);
 		},
@@ -250,7 +247,6 @@
                 update: function (event, ui) {
                     $('div.item', this).each(function (i) {
                         var cid = $(this).attr('list-cid');
-						console.log(cid);
                         listItem = opt.collection.getByCid(cid);
                         listItem.save({
                             order: i + 1
@@ -259,12 +255,7 @@
                 }
             });
         },
-		
-		showTodos: function (e) {
-			$('list-cid').$(e.target).parent().parent();
-			this.trigger("zoomtolist", this.model.cid);
-        },
-
+	
         render: function () {
             this.$('#listsData').html(this.template({
                 total: this.collection.length,
@@ -272,21 +263,27 @@
             }));
             return this;
         },
-
+	
+		//Render one item
         addOne: function (list) {
             var view = new ListItemView({
                 model: list
             });
             this.$('#lists').append(view.render().el);
         },
-
+		
+		//Render all the items in list
         addAll: function () {
             this.collection.each(this.addOne);
         },
+		
+		//Count collection and return the lenght
 		nextOrder: function() {
 			if (!this.collection.length) return 1;
 			return this.collection.length + 1;
 		},
+		
+		//Create a new item in list
         createOnEnter: function (e) {
             var title = $('#newList').val();
             if (!title || e.keyCode != 13) return;
@@ -298,8 +295,7 @@
         },
     });
 
-
-   FullListView = Backbone.View.extend({ // former TodosView
+   FullListView = Backbone.View.extend({ 
 
         el: $("#container"),
 
@@ -312,20 +308,12 @@
 
         initialize: function (opt) {
 			
-			console.log('the list is here');
-			console.log(list);
-				
             _.bindAll(this, "render", "createOnEnter", 'addOne', 'addAll');
             this.collection.bind('add', this.addOne, this);
             this.collection.bind('reset', this.addAll, this);
             this.collection.bind('change', this.render, this);
             this.collection.bind('all', this.render, this);
-
-            console.log('fetch');
             this.collection.fetch();
-
-            console.log('this is the list collection.');
-            console.log(this.collection);
 
             //This handles the drag and drop functionality
             //with help of the, by default created, cid.	
@@ -343,9 +331,7 @@
         },
 
         render: function () {
-            //Changed from #todosData
             sorted = this.collection.getTodosByCid(this, list.id);
-			console.log(sorted);
             this.$('#todosData').html(this.template({
                 total: sorted.length,
                 remaining: this.collection.getChecked().length,
@@ -358,11 +344,10 @@
             var view = new TodoView({
                 model: todo
             });
-            console.log('add one');
             this.$('#todos').append(view.render().el);
         },
 
-        //Get the clicked models cid and sort out the todos for that list.
+        //Get the clicked models id and sort out the todos for that list.
         //Create a new view for each.
         addAll: function () {
 
@@ -385,10 +370,9 @@
             var todo = $('#newTodo').val();
             if (!todo || e.keyCode != 13) return;
 
-            console.log(this);
             this.collection.create({
                 todo: todo,
-                listModelCid: list.id,
+                listModelId: list.id,
 				order: this.nextOrder()
             });
             this.$('#newTodo').val('');
@@ -410,24 +394,22 @@
 
         index: function () {
             this.listCollectionView.render();
-            //this.todosView.render();
         },
 
         //When user click list title, we show them the todos
         //for that list.
         showList: function (cid) {
 			list = this.lists.getByCid(cid);
-			console.log("WOO",list);
 			
             $('#hide').removeAttr('id');
             $('#todoContainer input').attr('id', 'newTodo');
             $('.todoItem').empty();
             todos = new TodoCollection();
-            //Send the model so you can save the todos with the correct cid, to
+            //Send the model so you can save the todos with the correct id, to
             //connect it to a specific list.
             this.todosView = new FullListView({
                 collection: todos,
-                model: list // skickar med listan
+                model: list // we need the list for the id of the model.
             });
             this.todosView.render();
         },
