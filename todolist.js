@@ -1,5 +1,17 @@
 (function ($) {
-    ListModel = Backbone.Model.extend({
+
+
+/**********************************************************************************************
+*
+* Följande kan med fördel implemnteras
+*		När en lista tas bort skall alla todos också raderas
+*		När en lista är vald skall den markeras
+*		Spara i en databas	
+*		När man klickar på en todo skall den genomstrykas och ändra status till checked
+*
+**********************************************************************************************/    
+	
+	ListModel = Backbone.Model.extend({
         defaults: {
             status: 'unchecked',
         },
@@ -74,7 +86,6 @@
 
         events: {
             "dblclick .listItem span:nth-child(2)": "edit",
-
             "click .listItem span:nth-child(1)": "clear",
             "keypress .editListItem input": "updateOnEnter",
             "blur .editListItem input": "close",
@@ -149,6 +160,7 @@
 
         //Listen if a model change or is deleted.
         initialize: function (opt) {
+			
             this.model.bind('change', this.render, this);
             this.model.bind('destroy', this.remove, this);
         },
@@ -185,7 +197,10 @@
             this.model.destroy();
         },
 
-
+		nextOrder: function() {
+			if (!this.length) return 1;
+			return this.collection.lenght + 1;
+		},
         //Check if the user clicked Enter and then save if
         //the value in the input field is not empty. Remove the added classes 
         //to show and hide the correct fields.
@@ -211,7 +226,6 @@
         //Events
         events: {
             "keypress #newList": "createOnEnter",
-
             "click .listItem span:nth-child(2)": "showList" // flyttad till ListCollectionView
 
         },
@@ -230,17 +244,13 @@
             this.collection.bind('all', this.render, this);
             this.collection.fetch();
 
-            //Todo: Remove this in production
-            console.log('this is the list collection.');
-            console.log(this.collection);
-
             //This handles the drag and drop functionality
             //with help of the, by default created, cid.	
             this.$("#lists").sortable({
                 update: function (event, ui) {
                     $('div.item', this).each(function (i) {
                         var cid = $(this).attr('list-cid');
-                        console.log(opt);
+						console.log(cid);
                         listItem = opt.collection.getByCid(cid);
                         listItem.save({
                             order: i + 1
@@ -251,26 +261,8 @@
         },
 		
 		showTodos: function (e) {
-            
 			$('list-cid').$(e.target).parent().parent();
 			this.trigger("zoomtolist", this.model.cid);
-			//User click the list title
-            //Display the todolist that is connected to that list model
-            //User creates a todo and keypress Enter
-            //save the todo with the cid of the correct list model
-            //Loop each todos but display only the ones with the same
-            //cid as the current list model.
-            $('#hide').removeAttr('id');
-            $('#todoContainer input').attr('id', 'newTodo');
-            $('.todoItem').empty();
-            todos = new TodoCollection();
-            //Send the model so you can save the todos with the correct cid, to
-            //connect it to a specific list.
-            this.todosView = new TodosView({
-                collection: todos,
-                model: this.model
-            });
-            this.todosView.render();
         },
 
         render: function () {
@@ -282,25 +274,25 @@
         },
 
         addOne: function (list) {
-            console.log("add one");
             var view = new ListItemView({
                 model: list
             });
-            console.log(view.render().el);
             this.$('#lists').append(view.render().el);
-			//his.view.bind("zoomtolist",this.myFunc);
         },
 
         addAll: function () {
-            console.log("add all");
             this.collection.each(this.addOne);
         },
-
+		nextOrder: function() {
+			if (!this.collection.length) return 1;
+			return this.collection.length + 1;
+		},
         createOnEnter: function (e) {
             var title = $('#newList').val();
             if (!title || e.keyCode != 13) return;
             this.collection.create({
-                title: title
+                title: title,
+				order: this.nextOrder()
             });
             this.$('#newList').val('');
         },
@@ -320,10 +312,11 @@
 
         initialize: function (opt) {
 			
-			this.listModelCid = this.model.cid;
+			console.log('the list is here');
+			console.log(list);
 				
             _.bindAll(this, "render", "createOnEnter", 'addOne', 'addAll');
-            this.collection.bind('add', this.addOne, this, opt.model.cid);
+            this.collection.bind('add', this.addOne, this);
             this.collection.bind('reset', this.addAll, this);
             this.collection.bind('change', this.render, this);
             this.collection.bind('all', this.render, this);
@@ -334,16 +327,12 @@
             console.log('this is the list collection.');
             console.log(this.collection);
 
-            //Filter items on the id of the model clicked.
-            //var sortedTodos = this.getByListModelCid(this.collection.models, opt.model.cid);
             //This handles the drag and drop functionality
             //with help of the, by default created, cid.	
             this.$("#todos").sortable({
                 update: function (event, ui) {
                     $('div.todo', this).each(function (i) {
                         var cid = $(this).attr('todo-cid');
-                        console.log('below');
-						console.log(opt);
                         listItem = opt.collection.getByCid(cid);
                         listItem.save({
                             order: i + 1
@@ -355,8 +344,8 @@
 
         render: function () {
             //Changed from #todosData
-            sorted = this.collection.getTodosByCid(this, this.listModelCid);
-			
+            sorted = this.collection.getTodosByCid(this, list.id);
+			console.log(sorted);
             this.$('#todosData').html(this.template({
                 total: sorted.length,
                 remaining: this.collection.getChecked().length,
@@ -377,7 +366,7 @@
         //Create a new view for each.
         addAll: function () {
 
-            sorted = this.collection.getTodosByCid(this, this.model.cid);
+            sorted = this.collection.getTodosByCid(this, list.id);
             _.each(sorted, function (todos, key) {
 
                 var view = new TodoView({
@@ -386,15 +375,21 @@
                 this.$('#todos').append(view.render().el);
             });
         },
-
+		
+		nextOrder: function() {
+			if (!this.collection.length) return 1;
+			return this.collection.length + 1;
+		},
+		
         createOnEnter: function (e) {
             var todo = $('#newTodo').val();
             if (!todo || e.keyCode != 13) return;
 
-            console.log('You clicked ' + this.listModelCid);
+            console.log(this);
             this.collection.create({
                 todo: todo,
-                listModelCid: this.listModelCid
+                listModelCid: list.id,
+				order: this.nextOrder()
             });
             this.$('#newTodo').val('');
         },
@@ -411,11 +406,6 @@
                 collection: this.lists
             });
 			this.listCollectionView.bind("showlist",this.showList,this); 
-            //Todo: 
-            /*todos = new TodoCollection();
-			this.todosView = new TodosView({
-				collection: todos 
-			});*/
         },
 
         index: function () {
@@ -428,14 +418,7 @@
         showList: function (cid) {
 			list = this.lists.getByCid(cid);
 			console.log("WOO",list);
-
 			
-            //User click the list title
-            //Display the todolist that is connected to that list model
-            //User creates a todo and keypress Enter
-            //save the todo with the cid of the correct list model
-            //Loop each todos but display only the ones with the same
-            //cid as the current list model.
             $('#hide').removeAttr('id');
             $('#todoContainer input').attr('id', 'newTodo');
             $('.todoItem').empty();
