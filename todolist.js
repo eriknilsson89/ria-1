@@ -4,10 +4,10 @@
     /**********************************************************************************************
      *
      * Implementera:
-     *		När en lista tas bort skall alla todos också raderas
-     *		När en lista är vald skall den markeras
+     *		NÃ¤r en lista tas bort skall alla todos ocksÃ¥ raderas
+     *		NÃ¤r en lista Ã¤r vald skall den markeras
      *		Spara i en databas
-     *		När man klickar på en todo skall den genomstrykas och ändra status till checked
+     *		NÃ¤r man klickar pÃ¥ en todo skall den genomstrykas och Ã¤ndra status till checked
      *
      **********************************************************************************************/
 
@@ -77,7 +77,7 @@
     });
 
 
-    ListItemView = Backbone.View.extend({ // A view for an entry in the lists of lists
+    ListItemView = Backbone.View.extend({
         tagName: "li",
 
         template: _.template($('#tmpList').html()),
@@ -383,7 +383,7 @@
         },
 
         initialize: function () {
-            this.lists = new ListCollection(); // sparar referens
+            this.lists = new ListCollection();
             this.listCollectionView = new ListCollectionView({
                 collection: this.lists
             });
@@ -407,7 +407,7 @@
             //connect it to a specific list.
             this.todosView = new FullListView({
                 collection: todos,
-                model: list // we need the list for the id of the model.
+                model: list
             });
             this.todosView.render();
         },

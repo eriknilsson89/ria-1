@@ -1,207 +1,422 @@
-<!DOCTYPE html>  <html> <head>   <title>todolist.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               todolist.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">)</span> <span class="p">{</span>
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>List object. When all todos inside a list is done it automatically
-get status checked.</p>             </td>             <td class="code">               <div class="highlight"><pre>
-    <span class="nb">window</span><span class="p">.</span><span class="nx">List</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-		<span class="nx">defaults</span><span class="o">:</span> <span class="p">{</span>
-			<span class="nx">id</span><span class="o">:</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isUndefined</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">)</span> <span class="o">?</span> <span class="k">this</span><span class="p">.</span><span class="nx">id</span> <span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
-			<span class="nx">title</span><span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-			<span class="nx">order</span><span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-			<span class="nx">status</span><span class="o">:</span> <span class="s1">&#39;unchecked&#39;</span><span class="p">,</span>
-		<span class="p">},</span>
-		
-		<span class="nx">toggle</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-			<span class="k">this</span><span class="p">.</span><span class="nx">save</span><span class="p">({</span><span class="nx">status</span><span class="o">:</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;checked&quot;</span><span class="p">)});</span>
-		<span class="p">}</span>
-	<span class="p">});</span>
-    
-    <span class="nb">window</span><span class="p">.</span><span class="nx">Lists</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Collection</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-        
-        <span class="nx">model</span><span class="o">:</span> <span class="nx">List</span><span class="p">,</span>
-        
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Url if you got one, in this case we use
-localstorage</p>             </td>             <td class="code">               <div class="highlight"><pre>
-        <span class="nx">localStorage</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Store</span><span class="p">(</span><span class="s2">&quot;lists&quot;</span><span class="p">),</span>  
-		
-		<span class="nx">comparator</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">todo</span><span class="p">)</span> <span class="p">{</span>
-			<span class="k">return</span> <span class="nx">todo</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;order&#39;</span><span class="p">);</span>
-		<span class="p">},</span>
-		
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Todo: check these</p>             </td>             <td class="code">               <div class="highlight"><pre>
-		<span class="nx">done</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-			<span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">todo</span><span class="p">){</span> <span class="k">return</span> <span class="nx">todo</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;done&#39;</span><span class="p">);</span> <span class="p">});</span>
-		<span class="p">},</span>
-		
-		<span class="nx">remaining</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-			<span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">without</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">done</span><span class="p">());</span>
-		<span class="p">},</span>
-    <span class="p">});</span>  
-	
-	<span class="nb">window</span><span class="p">.</span><span class="nx">listsview</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-		
-        <span class="nx">tagName</span><span class="o">:</span>  <span class="s2">&quot;li&quot;</span><span class="p">,</span>
-		
-		<span class="nx">template</span><span class="o">:</span> <span class="nx">_</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#tmpListItems&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">()),</span>
-		
-        <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
-			  <span class="s2">&quot;dblclick ..listItem span:nth-child(2)&quot;</span> <span class="o">:</span> <span class="s2">&quot;edit&quot;</span><span class="p">,</span>
-			  <span class="s2">&quot;click ..listItem span:nth-child(2)&quot;</span> <span class="o">:</span> <span class="s2">&quot;showTodoList&quot;</span><span class="p">,</span>
-			  <span class="s2">&quot;click .listItem span:nth-child(1)&quot;</span> <span class="o">:</span> <span class="s2">&quot;clear&quot;</span><span class="p">,</span>
-			  <span class="s2">&quot;keypress .editListItem input&quot;</span> <span class="o">:</span> <span class="s2">&quot;updateOnEnter&quot;</span><span class="p">,</span>
-			  <span class="s2">&quot;blur .editListItem input&quot;</span> <span class="o">:</span> <span class="s2">&quot;close&quot;</span><span class="p">,</span>
-		<span class="p">},</span>
- 
-        <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">opt</span><span class="p">)</span> <span class="p">{</span>
-			<span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
-			<span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;destroy&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">remove</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
-        <span class="p">},</span>
-        
-        <span class="nx">render</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-			<span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">()));</span>
-			<span class="k">this</span><span class="p">.</span><span class="nx">setText</span><span class="p">();</span>
-			<span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-        <span class="p">},</span>
-		
-		<span class="nx">showTodoList</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-			<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Show me the list, please!&#39;</span><span class="p">);</span>
-		<span class="p">},</span>
-		
-		<span class="nx">setText</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-			<span class="kd">var</span> <span class="nx">text</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">);</span>
-			<span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.listItem span:nth-child(2)&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">text</span><span class="p">);</span>
-		<span class="p">},</span>
-		
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Switch classes hide and show functionallity.
-Then give the inputfield focus</p>             </td>             <td class="code">               <div class="highlight"><pre>
-		<span class="nx">edit</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-			<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;clicked a Title&#39;</span><span class="p">);</span>
-			<span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.listItem&#39;</span><span class="p">).</span><span class="nx">addClass</span><span class="p">(</span><span class="s1">&#39;hide&#39;</span><span class="p">);</span>
-			<span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.editListItem&#39;</span><span class="p">).</span><span class="nx">addClass</span><span class="p">(</span><span class="s1">&#39;editing&#39;</span><span class="p">);</span>
-			<span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">).</span><span class="nx">focus</span><span class="p">();</span>
-		<span class="p">},</span>
-		
-		<span class="nx">remove</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-			<span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">).</span><span class="nx">remove</span><span class="p">();</span>
-		<span class="p">},</span>
-		
-		<span class="nx">closeInput</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-			<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;lost focus&quot;</span><span class="p">);</span>
-		<span class="p">},</span>
-		
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Went the input gets blury, make it dissapear.</p>             </td>             <td class="code">               <div class="highlight"><pre>
-        <span class="nx">close</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-			<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;in close function&#39;</span><span class="p">);</span>
-			<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.listItem&#39;</span><span class="p">).</span><span class="nx">removeClass</span><span class="p">(</span><span class="s1">&#39;hide&#39;</span><span class="p">);</span>
-			<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.editListItem&#39;</span><span class="p">).</span><span class="nx">removeClass</span><span class="p">(</span><span class="s1">&#39;editing&#39;</span><span class="p">);</span>
-		<span class="p">},</span>
-		
-		<span class="nx">toggleDone</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-			<span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toggle</span><span class="p">();</span>
-		<span class="p">},</span>
-		
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Destroy this model</p>             </td>             <td class="code">               <div class="highlight"><pre>
-		<span class="nx">clear</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-			<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;destroy please&quot;</span><span class="p">);</span>
-			<span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">destroy</span><span class="p">();</span>
-		<span class="p">},</span>
-		
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Check if the user clicked Enter and then save if
-the value in the input field is not empty. Remove the added classes 
-to show and hide the correct fields.</p>             </td>             <td class="code">               <div class="highlight"><pre>
-        <span class="nx">updateOnEnter</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-			<span class="k">if</span> <span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">keyCode</span> <span class="o">==</span> <span class="mi">13</span><span class="p">){</span>
-				<span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">){</span>
-					<span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">save</span><span class="p">({</span><span class="nx">title</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">()});</span>
-				<span class="p">}</span>
-				<span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.listItem&#39;</span><span class="p">).</span><span class="nx">removeClass</span><span class="p">(</span><span class="s1">&#39;hide&#39;</span><span class="p">);</span>
-				<span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.editListItem&#39;</span><span class="p">).</span><span class="nx">removeClass</span><span class="p">(</span><span class="s1">&#39;editing&#39;</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
-			<span class="p">}</span> 
+<!DOCTYPE html>  <html> <head>   <title>todolist.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               todolist.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">$</span><span class="p">)</span> <span class="p">{</span>
+
+
+    <span class="cm">/**********************************************************************************************</span>
+<span class="cm">     *</span>
+<span class="cm">     * Implementera:</span>
+<span class="cm">     *		När en lista tas bort skall alla todos också raderas</span>
+<span class="cm">     *		När en lista är vald skall den markeras</span>
+<span class="cm">     *		Spara i en databas</span>
+<span class="cm">     *		När man klickar på en todo skall den genomstrykas och ändra status till checked</span>
+<span class="cm">     *</span>
+<span class="cm">     **********************************************************************************************/</span>
+
+    <span class="nx">ListModel</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+        <span class="nx">defaults</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">status</span><span class="o">:</span> <span class="s1">&#39;unchecked&#39;</span><span class="p">,</span>
         <span class="p">},</span>
     <span class="p">});</span>
-	
-    <span class="nb">window</span><span class="p">.</span><span class="nx">InitView</span> <span class="o">=</span> <span class="nx">listsview</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-        
-        <span class="nx">el</span> <span class="o">:</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#container&quot;</span><span class="p">),</span>
-		
-		<span class="nx">template</span><span class="o">:</span> <span class="nx">_</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#dataTemplate&quot;</span><span class="p">).</span><span class="nx">html</span><span class="p">()),</span>
-		
-        <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
-          <span class="s2">&quot;keypress #newList&quot;</span><span class="o">:</span>  <span class="s2">&quot;createOnEnter&quot;</span>
+
+    <span class="nx">TodoModel</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+        <span class="nx">defaults</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">status</span><span class="o">:</span> <span class="s1">&#39;unchecked&#39;</span><span class="p">,</span>
         <span class="p">},</span>
- 
-        <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">opt</span><span class="p">)</span> <span class="p">{</span>
-			<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">);</span>
-			
-			<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;above&#39;</span><span class="p">);</span>
-			<span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span><span class="s2">&quot;render&quot;</span><span class="p">,</span> <span class="s2">&quot;createOnEnter&quot;</span><span class="p">,</span> <span class="s1">&#39;addOne&#39;</span><span class="p">,</span> <span class="s1">&#39;addAll&#39;</span><span class="p">);</span>
-			<span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;add&#39;</span><span class="p">,</span>   <span class="k">this</span><span class="p">.</span><span class="nx">addOne</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
-			<span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;reset&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">addAll</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
-			<span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
-            <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>	
-			<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">);</span>
-			<span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">fetch</span><span class="p">();</span>
-			
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>This handles the drag and drop functionallity</p>             </td>             <td class="code">               <div class="highlight"><pre>
-			<span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#lists&quot;</span><span class="p">).</span><span class="nx">sortable</span><span class="p">({</span>
-                <span class="nx">update</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">ui</span><span class="p">)</span> <span class="p">{</span>
-                    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;div.item&#39;</span><span class="p">,</span><span class="k">this</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">i</span><span class="p">){</span>
-						
-                        <span class="kd">var</span> <span class="nx">id</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;list-id&#39;</span><span class="p">);</span>
-							<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
-                            <span class="nx">listItem</span> <span class="o">=</span> <span class="nx">opt</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
-							<span class="nx">listItem</span><span class="p">.</span><span class="nx">save</span><span class="p">({</span><span class="nx">order</span><span class="o">:</span> <span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">});</span>
+    <span class="p">});</span>
+
+    <span class="nx">ListCollection</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Collection</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+
+        <span class="nx">model</span><span class="o">:</span> <span class="nx">ListModel</span><span class="p">,</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Save lists to localstorage. Use url
+pointing serverscript if you use a 
+nosql database.    </p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">localStorage</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Store</span><span class="p">(</span><span class="s2">&quot;lists&quot;</span><span class="p">),</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>This function maintain the collection
+in sorting order.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">comparator</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">list</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;order&#39;</span><span class="p">);</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>This function returns the finished lists. </p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">getChecked</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">list</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;checked&#39;</span><span class="p">);</span>
+            <span class="p">});</span>
+        <span class="p">},</span>
+    <span class="p">});</span>
+
+    <span class="nx">TodoCollection</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Collection</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+
+        <span class="nx">model</span><span class="o">:</span> <span class="nx">TodoModel</span><span class="p">,</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Save lists to localstorage. Use url
+pointing serverscript if you use a 
+nosql database.    </p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">localStorage</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Store</span><span class="p">(</span><span class="s2">&quot;todos&quot;</span><span class="p">),</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>This function maintain the collection
+in sorting order.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">comparator</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">list</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;order&#39;</span><span class="p">);</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Return only the lists that has requested id</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">getTodosByCid</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">list</span><span class="p">,</span> <span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">list</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;listModelId&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="nx">id</span><span class="p">;</span>
+            <span class="p">});</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>This function returns the finished lists. </p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">getChecked</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">list</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;checked&#39;</span><span class="p">);</span>
+            <span class="p">});</span>
+        <span class="p">},</span>
+    <span class="p">});</span>
+
+
+    <span class="nx">ListItemView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+        <span class="nx">tagName</span><span class="o">:</span> <span class="s2">&quot;li&quot;</span><span class="p">,</span>
+
+        <span class="nx">template</span><span class="o">:</span> <span class="nx">_</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#tmpList&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">()),</span>
+
+        <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s2">&quot;dblclick .listItem span:nth-child(2)&quot;</span><span class="o">:</span> <span class="s2">&quot;edit&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;click .listItem span:nth-child(1)&quot;</span><span class="o">:</span> <span class="s2">&quot;clear&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;keypress .editListItem input&quot;</span><span class="o">:</span> <span class="s2">&quot;updateOnEnter&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;blur .editListItem input&quot;</span><span class="o">:</span> <span class="s2">&quot;close&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Listen if a model change or is deleted.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">opt</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;destroy&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">remove</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Render the template</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">()));</span>
+            <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>Switch classes hide and show functionallity.
+Then give the inputfield focus.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">edit</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.listItem&#39;</span><span class="p">).</span><span class="nx">addClass</span><span class="p">(</span><span class="s1">&#39;hide&#39;</span><span class="p">);</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.editListItem&#39;</span><span class="p">).</span><span class="nx">addClass</span><span class="p">(</span><span class="s1">&#39;editing&#39;</span><span class="p">);</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">).</span><span class="nx">focus</span><span class="p">();</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>Remove element from scene.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">remove</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">).</span><span class="nx">remove</span><span class="p">();</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>When the input(edit listtitle) loses focus, we make it
+disappear with the help of Css.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">close</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.listItem&#39;</span><span class="p">).</span><span class="nx">removeClass</span><span class="p">(</span><span class="s1">&#39;hide&#39;</span><span class="p">);</span>
+            <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.editListItem&#39;</span><span class="p">).</span><span class="nx">removeClass</span><span class="p">(</span><span class="s1">&#39;editing&#39;</span><span class="p">);</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>Destroy this model</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">clear</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">destroy</span><span class="p">();</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>Check if the user clicked Enter and then save if
+a value exists in the input field. Remove the added classes 
+to show and hide the correct fields.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">updateOnEnter</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">keyCode</span> <span class="o">==</span> <span class="mi">13</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">save</span><span class="p">({</span>
+                        <span class="nx">title</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">(),</span>
+                    <span class="p">});</span>
+                <span class="p">}</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+    <span class="p">});</span>
+
+    <span class="nx">TodoView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+
+        <span class="nx">tagName</span><span class="o">:</span> <span class="s2">&quot;li&quot;</span><span class="p">,</span>
+
+        <span class="nx">template</span><span class="o">:</span> <span class="nx">_</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#tmpTodo&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">()),</span>
+
+        <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s2">&quot;dblclick .todoItem span:nth-child(2)&quot;</span><span class="o">:</span> <span class="s2">&quot;edit&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;click .todoItem span:nth-child(1)&quot;</span><span class="o">:</span> <span class="s2">&quot;clear&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;keypress .editTodoItem input&quot;</span><span class="o">:</span> <span class="s2">&quot;updateOnEnter&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;blur .editTodoItem input&quot;</span><span class="o">:</span> <span class="s2">&quot;close&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>Listen if a model change or is deleted.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">opt</span><span class="p">)</span> <span class="p">{</span>
+
+            <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;destroy&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">remove</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>Render the template</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">()));</span>
+            <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>Switch classes hide and show functionallity.
+Then give the inputfield focus.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">edit</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.todoItem&#39;</span><span class="p">).</span><span class="nx">addClass</span><span class="p">(</span><span class="s1">&#39;hide&#39;</span><span class="p">);</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.editTodoItem&#39;</span><span class="p">).</span><span class="nx">addClass</span><span class="p">(</span><span class="s1">&#39;editing&#39;</span><span class="p">);</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">).</span><span class="nx">focus</span><span class="p">();</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>Remove element from scene.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">remove</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">).</span><span class="nx">remove</span><span class="p">();</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>When the input(edit list title) loses focus, we make it
+disappear with help of Css.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">close</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.todoItem&#39;</span><span class="p">).</span><span class="nx">removeClass</span><span class="p">(</span><span class="s1">&#39;hide&#39;</span><span class="p">);</span>
+            <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.editTodoItem&#39;</span><span class="p">).</span><span class="nx">removeClass</span><span class="p">(</span><span class="s1">&#39;editing&#39;</span><span class="p">);</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>Destroy this model</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">clear</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">destroy</span><span class="p">();</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>Count collection and return the lenght</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">nextOrder</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">lenght</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>Check if the user clicked enter and then save if
+a value exists in the input. Remove the added classes 
+to show and hide the correct fields.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">updateOnEnter</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">keyCode</span> <span class="o">==</span> <span class="mi">13</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">save</span><span class="p">({</span>
+                        <span class="nx">todo</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">()</span>
+                    <span class="p">});</span>
+                <span class="p">}</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+    <span class="p">});</span>
+
+    <span class="nx">ListCollectionView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+
+        <span class="nx">el</span><span class="o">:</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#container&quot;</span><span class="p">),</span>
+
+        <span class="nx">template</span><span class="o">:</span> <span class="nx">_</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#dataTemplate&quot;</span><span class="p">).</span><span class="nx">html</span><span class="p">()),</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>Events</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s2">&quot;keypress #newList&quot;</span><span class="o">:</span> <span class="s2">&quot;createOnEnter&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;click .listItem span:nth-child(2)&quot;</span><span class="o">:</span> <span class="s2">&quot;showList&quot;</span> <span class="c1">// flyttad till ListCollectionView</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>Send upwards in backbone hierarchy. Let the router handle it!</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">showList</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">cid</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">parent</span><span class="p">().</span><span class="nx">parent</span><span class="p">().</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;list-cid&quot;</span><span class="p">);</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s2">&quot;showlist&quot;</span><span class="p">,</span> <span class="nx">cid</span><span class="p">);</span>
+        <span class="p">},</span>
+
+        <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">opt</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s2">&quot;render&quot;</span><span class="p">,</span> <span class="s2">&quot;createOnEnter&quot;</span><span class="p">,</span> <span class="s1">&#39;addOne&#39;</span><span class="p">,</span> <span class="s1">&#39;addAll&#39;</span><span class="p">);</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">addOne</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;reset&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">addAll</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">fetch</span><span class="p">();</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>This handles the drag and drop functionality
+with help of the, by default created, cid.    </p>             </td>             <td class="code">               <div class="highlight"><pre>
+            <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#lists&quot;</span><span class="p">).</span><span class="nx">sortable</span><span class="p">({</span>
+                <span class="nx">update</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">ui</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;div.item&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="kd">var</span> <span class="nx">cid</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;list-cid&#39;</span><span class="p">);</span>
+                        <span class="nx">listItem</span> <span class="o">=</span> <span class="nx">opt</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">getByCid</span><span class="p">(</span><span class="nx">cid</span><span class="p">);</span>
+                        <span class="nx">listItem</span><span class="p">.</span><span class="nx">save</span><span class="p">({</span>
+                            <span class="nx">order</span><span class="o">:</span> <span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span>
+                        <span class="p">});</span>
                     <span class="p">});</span>
                 <span class="p">}</span>
             <span class="p">});</span>
         <span class="p">},</span>
-        
-        <span class="nx">render</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-			<span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#listsData&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">({</span>
-				<span class="nx">total</span><span class="o">:</span>      <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span>
-				<span class="nx">remaining</span><span class="o">:</span>  <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">remaining</span><span class="p">().</span><span class="nx">length</span><span class="p">,</span>
-			<span class="p">}));</span>
-			<span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+
+        <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#listsData&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">({</span>
+                <span class="nx">total</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span>
+                <span class="nx">remaining</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">getChecked</span><span class="p">().</span><span class="nx">length</span><span class="p">,</span>
+            <span class="p">}));</span>
+            <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
         <span class="p">},</span>
-		
-		<span class="nx">addOne</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
-			<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;add one&quot;</span><span class="p">);</span>
-			<span class="kd">var</span> <span class="nx">view</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">listsview</span><span class="p">({</span><span class="nx">model</span><span class="o">:</span> <span class="nx">list</span><span class="p">});</span>
-			<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">view</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span><span class="p">);</span>
-			<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#lists&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">view</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span><span class="p">);</span>
-		<span class="p">},</span>
-		
-		<span class="nx">addAll</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-			<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;add all&quot;</span><span class="p">);</span>
-			<span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">addOne</span><span class="p">);</span>
-		<span class="p">},</span>
-        
-        <span class="nx">createOnEnter</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-			<span class="kd">var</span> <span class="nx">title</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#newList&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">();</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>Render one item</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">addOne</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">view</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ListItemView</span><span class="p">({</span>
+                <span class="nx">model</span><span class="o">:</span> <span class="nx">list</span>
+            <span class="p">});</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#lists&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">view</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span><span class="p">);</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>Render all the items in list</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">addAll</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">addOne</span><span class="p">);</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <p>Count collection and return the lenght</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">nextOrder</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <p>Create a new item in list</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">createOnEnter</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">title</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#newList&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">();</span>
             <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">title</span> <span class="o">||</span> <span class="nx">e</span><span class="p">.</span><span class="nx">keyCode</span> <span class="o">!=</span> <span class="mi">13</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
-            <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span><span class="nx">title</span><span class="o">:</span> <span class="nx">title</span><span class="p">});</span>
-			<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#newList&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
-			
+            <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+                <span class="nx">title</span><span class="o">:</span> <span class="nx">title</span><span class="p">,</span>
+                <span class="nx">order</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">nextOrder</span><span class="p">()</span>
+            <span class="p">});</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#newList&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
         <span class="p">},</span>
     <span class="p">});</span>
-	
-	<span class="nb">window</span><span class="p">.</span><span class="nx">Flamingolist</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Router</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+
+    <span class="nx">FullListView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+
+        <span class="nx">el</span><span class="o">:</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#container&quot;</span><span class="p">),</span>
+
+        <span class="nx">template</span><span class="o">:</span> <span class="nx">_</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#todoDataTemplate&quot;</span><span class="p">).</span><span class="nx">html</span><span class="p">()),</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <p>Events</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s2">&quot;keypress #newTodo&quot;</span><span class="o">:</span> <span class="s2">&quot;createOnEnter&quot;</span>
+        <span class="p">},</span>
+
+        <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">opt</span><span class="p">)</span> <span class="p">{</span>
+
+            <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s2">&quot;render&quot;</span><span class="p">,</span> <span class="s2">&quot;createOnEnter&quot;</span><span class="p">,</span> <span class="s1">&#39;addOne&#39;</span><span class="p">,</span> <span class="s1">&#39;addAll&#39;</span><span class="p">);</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">addOne</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;reset&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">addAll</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">fetch</span><span class="p">();</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-32">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-32">&#182;</a>               </div>               <p>This handles the drag and drop functionality
+with help of the, by default created, cid.    </p>             </td>             <td class="code">               <div class="highlight"><pre>
+            <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#todos&quot;</span><span class="p">).</span><span class="nx">sortable</span><span class="p">({</span>
+                <span class="nx">update</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">ui</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;div.todo&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="kd">var</span> <span class="nx">cid</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;todo-cid&#39;</span><span class="p">);</span>
+                        <span class="nx">listItem</span> <span class="o">=</span> <span class="nx">opt</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">getByCid</span><span class="p">(</span><span class="nx">cid</span><span class="p">);</span>
+                        <span class="nx">listItem</span><span class="p">.</span><span class="nx">save</span><span class="p">({</span>
+                            <span class="nx">order</span><span class="o">:</span> <span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span>
+                        <span class="p">});</span>
+                    <span class="p">});</span>
+                <span class="p">}</span>
+            <span class="p">});</span>
+        <span class="p">},</span>
+
+        <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="nx">sorted</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">getTodosByCid</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">list</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#todosData&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">({</span>
+                <span class="nx">total</span><span class="o">:</span> <span class="nx">sorted</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span>
+                <span class="nx">remaining</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">getChecked</span><span class="p">().</span><span class="nx">length</span><span class="p">,</span>
+            <span class="p">}));</span>
+            <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+        <span class="p">},</span>
+
+        <span class="nx">addOne</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">todo</span><span class="p">)</span> <span class="p">{</span>
+
+            <span class="kd">var</span> <span class="nx">view</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TodoView</span><span class="p">({</span>
+                <span class="nx">model</span><span class="o">:</span> <span class="nx">todo</span>
+            <span class="p">});</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#todos&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">view</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span><span class="p">);</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <p>Get the clicked models id and sort out the todos for that list.
+Create a new view for each.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">addAll</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+
+            <span class="nx">sorted</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">getTodosByCid</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">list</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+            <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">sorted</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">todos</span><span class="p">,</span> <span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
+
+                <span class="kd">var</span> <span class="nx">view</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TodoView</span><span class="p">({</span>
+                    <span class="nx">model</span><span class="o">:</span> <span class="nx">todos</span>
+                <span class="p">});</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#todos&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">view</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span><span class="p">);</span>
+            <span class="p">});</span>
+        <span class="p">},</span>
+
+        <span class="nx">nextOrder</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="p">},</span>
+
+        <span class="nx">createOnEnter</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">todo</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#newTodo&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">();</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">todo</span> <span class="o">||</span> <span class="nx">e</span><span class="p">.</span><span class="nx">keyCode</span> <span class="o">!=</span> <span class="mi">13</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+
+            <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+                <span class="nx">todo</span><span class="o">:</span> <span class="nx">todo</span><span class="p">,</span>
+                <span class="nx">listModelId</span><span class="o">:</span> <span class="nx">list</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
+                <span class="nx">order</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">nextOrder</span><span class="p">()</span>
+            <span class="p">});</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#newTodo&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+        <span class="p">},</span>
+    <span class="p">});</span>
+
+    <span class="nx">TodoList</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Router</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
         <span class="nx">routes</span><span class="o">:</span> <span class="p">{</span>
             <span class="s1">&#39;&#39;</span><span class="o">:</span> <span class="s1">&#39;index&#39;</span>
         <span class="p">},</span>
-        
-        <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-			<span class="nx">lists</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Lists</span><span class="p">();</span>
-            <span class="k">this</span><span class="p">.</span><span class="nx">initView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">InitView</span><span class="p">({</span><span class="nx">collection</span><span class="o">:</span>  <span class="nx">lists</span><span class="p">});</span>
+
+        <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">lists</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ListCollection</span><span class="p">();</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">listCollectionView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ListCollectionView</span><span class="p">({</span>
+                <span class="nx">collection</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">lists</span>
+            <span class="p">});</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">listCollectionView</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s2">&quot;showlist&quot;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">showList</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
         <span class="p">},</span>
-        
-        <span class="nx">index</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-            <span class="k">this</span><span class="p">.</span><span class="nx">initView</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
-        <span class="p">}</span>
+
+        <span class="nx">index</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">listCollectionView</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
+        <span class="p">},</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-34">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-34">&#182;</a>               </div>               <p>When user click list title, we show them the todos
+for that list.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+        <span class="nx">showList</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">cid</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">list</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">lists</span><span class="p">.</span><span class="nx">getByCid</span><span class="p">(</span><span class="nx">cid</span><span class="p">);</span>
+
+            <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#hide&#39;</span><span class="p">).</span><span class="nx">removeAttr</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">);</span>
+            <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#todoContainer input&#39;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;newTodo&#39;</span><span class="p">);</span>
+            <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.todoItem&#39;</span><span class="p">).</span><span class="nx">empty</span><span class="p">();</span>
+            <span class="nx">todos</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TodoCollection</span><span class="p">();</span>
+</pre></div>             </td>           </tr>                               <tr id="section-35">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-35">&#182;</a>               </div>               <p>Send the model so you can save the todos with the correct id, to
+connect it to a specific list.</p>             </td>             <td class="code">               <div class="highlight"><pre>
+            <span class="k">this</span><span class="p">.</span><span class="nx">todosView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FullListView</span><span class="p">({</span>
+                <span class="nx">collection</span><span class="o">:</span> <span class="nx">todos</span><span class="p">,</span>
+                <span class="nx">model</span><span class="o">:</span> <span class="nx">list</span>
+            <span class="p">});</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">todosView</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
+        <span class="p">},</span>
     <span class="p">});</span>
-	
-	<span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
-		<span class="nx">flamingolist</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Flamingolist</span><span class="p">;</span>
-		<span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">start</span><span class="p">();</span>
-	<span class="p">});</span>
+
+    <span class="nx">$</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="k">new</span> <span class="nx">TodoList</span><span class="p">;</span>
+        <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">start</span><span class="p">();</span>
+    <span class="p">});</span>
 <span class="p">})(</span><span class="nx">jQuery</span><span class="p">);</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
