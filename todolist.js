@@ -68,7 +68,7 @@
         },
     });
 
-    ListView = Backbone.View.extend({
+    ListItemView = Backbone.View.extend({ // A view for an entry in the lists of lists
 
         tagName: "li",
 
@@ -76,7 +76,7 @@
 
         events: {
             "dblclick .listItem span:nth-child(2)": "edit",
-            "click .listItem span:nth-child(2)": "showTodos",
+//            "click .listItem span:nth-child(2)": "showTodos", // flyttad till ListCollectionView
             "click .listItem span:nth-child(1)": "clear",
             "keypress .editListItem input": "updateOnEnter",
             "blur .editListItem input": "close",
@@ -92,28 +92,6 @@
         render: function () {
             $(this.el).html(this.template(this.model.toJSON()));
             return this;
-        },
-
-        //When user click list title, we show them the todos
-        //for that list.
-        showTodos: function (e) {
-            //User click the list title
-            //Display the todolist that is connected to that list model
-            //User creates a todo and keypress Enter
-            //save the todo with the cid of the correct list model
-            //Loop each todos but display only the ones with the same
-            //cid as the current list model.
-            $('#hide').removeAttr('id');
-            $('#todoContainer input').attr('id', 'newTodo');
-            $('.todoItem').empty();
-            todos = new TodoCollection();
-            //Send the model so you can save the todos with the correct cid, to
-            //connect it to a specific list.
-            this.todosView = new TodosView({
-                collection: todos,
-                model: this.model
-            });
-            this.todosView.render();
         },
 
         //Switch classes hide and show functionallity.
@@ -224,7 +202,7 @@
         },
     });
 
-    ListsView = Backbone.View.extend({
+    ListCollectionView = Backbone.View.extend({
 
         el: $("#container"),
 
@@ -232,8 +210,15 @@
 
         //Events
         events: {
-            "keypress #newList": "createOnEnter"
+            "keypress #newList": "createOnEnter",
+            "click .listItem span:nth-child(2)": "showList" // flyttad till ListCollectionView
         },
+
+		showList: function(e){
+			console.log("WOO",e.target);
+			cid = $(e.target).parent().parent().attr("list-cid");
+			this.trigger("showlist",cid);
+		},
 
         initialize: function (opt) {
             _.bindAll(this, "render", "createOnEnter", 'addOne', 'addAll');
@@ -273,7 +258,7 @@
 
         addOne: function (list) {
             console.log("add one");
-            var view = new ListView({
+            var view = new ListItemView({
                 model: list
             });
             console.log(view.render().el);
@@ -295,7 +280,7 @@
         },
     });
 
-    TodosView = Backbone.View.extend({
+    FullListView = Backbone.View.extend({ // former TodosView
 
         el: $("#container"),
 
@@ -394,10 +379,11 @@
         },
 
         initialize: function () {
-            lists = new ListCollection();
-            this.listsView = new ListsView({
-                collection: lists
+            this.lists = new ListCollection(); // sparar referens
+            this.listCollectionView = new ListCollectionView({
+                collection: this.lists
             });
+			this.listCollectionView.bind("showlist",this.showList,this); 
             //Todo: 
             /*todos = new TodoCollection();
 			this.todosView = new TodosView({
@@ -406,9 +392,35 @@
         },
 
         index: function () {
-            this.listsView.render();
+            this.listCollectionView.render();
             //this.todosView.render();
-        }
+        },
+
+        //When user click list title, we show them the todos
+        //for that list.
+        showList: function (cid) {
+			list = this.lists.getByCid(cid);
+			console.log("WOO",list);
+
+			
+            //User click the list title
+            //Display the todolist that is connected to that list model
+            //User creates a todo and keypress Enter
+            //save the todo with the cid of the correct list model
+            //Loop each todos but display only the ones with the same
+            //cid as the current list model.
+            $('#hide').removeAttr('id');
+            $('#todoContainer input').attr('id', 'newTodo');
+            $('.todoItem').empty();
+            todos = new TodoCollection();
+            //Send the model so you can save the todos with the correct cid, to
+            //connect it to a specific list.
+            this.todosView = new FullListView({
+                collection: todos,
+                model: list // skickar med listan
+            });
+            this.todosView.render();
+        },
     });
 
     $(function () {
