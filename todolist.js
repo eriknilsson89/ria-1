@@ -1,17 +1,17 @@
 (function ($) {
 
 
-/**********************************************************************************************
-*
-* Implementera:
-*		När en lista tas bort skall alla todos också raderas
-*		När en lista är vald skall den markeras
-*		Spara i en databas	
-*		När man klickar på en todo skall den genomstrykas och ändra status till checked
-*
-**********************************************************************************************/    
-	
-	ListModel = Backbone.Model.extend({
+    /**********************************************************************************************
+     *
+     * Implementera:
+     *		När en lista tas bort skall alla todos också raderas
+     *		När en lista är vald skall den markeras
+     *		Spara i en databas
+     *		När man klickar på en todo skall den genomstrykas och ändra status till checked
+     *
+     **********************************************************************************************/
+
+    ListModel = Backbone.Model.extend({
         defaults: {
             status: 'unchecked',
         },
@@ -60,14 +60,14 @@
         comparator: function (list) {
             return list.get('order');
         },
-		
-		//Return only the lists that has requested id
+
+        //Return only the lists that has requested id
         getTodosByCid: function (list, id) {
             return this.filter(function (list) {
                 return list.get('listModelId') == id;
             });
         },
-		
+
         //This function returns the finished lists. 
         getChecked: function () {
             return this.filter(function (list) {
@@ -78,7 +78,6 @@
 
 
     ListItemView = Backbone.View.extend({ // A view for an entry in the lists of lists
-
         tagName: "li",
 
         template: _.template($('#tmpList').html()),
@@ -157,7 +156,7 @@
 
         //Listen if a model change or is deleted.
         initialize: function (opt) {
-			
+
             this.model.bind('change', this.render, this);
             this.model.bind('destroy', this.remove, this);
         },
@@ -192,13 +191,13 @@
         clear: function () {
             this.model.destroy();
         },
-		
-		//Count collection and return the lenght
-		nextOrder: function() {
-			if (!this.length) return 1;
-			return this.collection.lenght + 1;
-		},
-		
+
+        //Count collection and return the lenght
+        nextOrder: function () {
+            if (!this.length) return 1;
+            return this.collection.lenght + 1;
+        },
+
         //Check if the user clicked enter and then save if
         //a value exists in the input. Remove the added classes 
         //to show and hide the correct fields.
@@ -219,19 +218,18 @@
         el: $("#container"),
 
         template: _.template($("#dataTemplate").html()),
-		
+
         //Events
         events: {
             "keypress #newList": "createOnEnter",
             "click .listItem span:nth-child(2)": "showList" // flyttad till ListCollectionView
-
         },
-		
-		//Send upwards in backbone hierarchy. Let the router handle it!
-		showList: function(e){
-			cid = $(e.target).parent().parent().attr("list-cid");
-			this.trigger("showlist",cid);
-		},
+
+        //Send upwards in backbone hierarchy. Let the router handle it!
+        showList: function (e) {
+            cid = $(e.target).parent().parent().attr("list-cid");
+            this.trigger("showlist", cid);
+        },
 
         initialize: function (opt) {
             _.bindAll(this, "render", "createOnEnter", 'addOne', 'addAll');
@@ -255,7 +253,7 @@
                 }
             });
         },
-	
+
         render: function () {
             this.$('#listsData').html(this.template({
                 total: this.collection.length,
@@ -263,39 +261,39 @@
             }));
             return this;
         },
-	
-		//Render one item
+
+        //Render one item
         addOne: function (list) {
             var view = new ListItemView({
                 model: list
             });
             this.$('#lists').append(view.render().el);
         },
-		
-		//Render all the items in list
+
+        //Render all the items in list
         addAll: function () {
             this.collection.each(this.addOne);
         },
-		
-		//Count collection and return the lenght
-		nextOrder: function() {
-			if (!this.collection.length) return 1;
-			return this.collection.length + 1;
-		},
-		
-		//Create a new item in list
+
+        //Count collection and return the lenght
+        nextOrder: function () {
+            if (!this.collection.length) return 1;
+            return this.collection.length + 1;
+        },
+
+        //Create a new item in list
         createOnEnter: function (e) {
             var title = $('#newList').val();
             if (!title || e.keyCode != 13) return;
             this.collection.create({
                 title: title,
-				order: this.nextOrder()
+                order: this.nextOrder()
             });
             this.$('#newList').val('');
         },
     });
 
-   FullListView = Backbone.View.extend({ 
+    FullListView = Backbone.View.extend({
 
         el: $("#container"),
 
@@ -307,7 +305,7 @@
         },
 
         initialize: function (opt) {
-			
+
             _.bindAll(this, "render", "createOnEnter", 'addOne', 'addAll');
             this.collection.bind('add', this.addOne, this);
             this.collection.bind('reset', this.addAll, this);
@@ -338,7 +336,7 @@
             }));
             return this;
         },
-		
+
         addOne: function (todo) {
 
             var view = new TodoView({
@@ -360,12 +358,12 @@
                 this.$('#todos').append(view.render().el);
             });
         },
-		
-		nextOrder: function() {
-			if (!this.collection.length) return 1;
-			return this.collection.length + 1;
-		},
-		
+
+        nextOrder: function () {
+            if (!this.collection.length) return 1;
+            return this.collection.length + 1;
+        },
+
         createOnEnter: function (e) {
             var todo = $('#newTodo').val();
             if (!todo || e.keyCode != 13) return;
@@ -373,7 +371,7 @@
             this.collection.create({
                 todo: todo,
                 listModelId: list.id,
-				order: this.nextOrder()
+                order: this.nextOrder()
             });
             this.$('#newTodo').val('');
         },
@@ -389,7 +387,7 @@
             this.listCollectionView = new ListCollectionView({
                 collection: this.lists
             });
-			this.listCollectionView.bind("showlist",this.showList,this); 
+            this.listCollectionView.bind("showlist", this.showList, this);
         },
 
         index: function () {
@@ -399,8 +397,8 @@
         //When user click list title, we show them the todos
         //for that list.
         showList: function (cid) {
-			list = this.lists.getByCid(cid);
-			
+            list = this.lists.getByCid(cid);
+
             $('#hide').removeAttr('id');
             $('#todoContainer input').attr('id', 'newTodo');
             $('.todoItem').empty();
