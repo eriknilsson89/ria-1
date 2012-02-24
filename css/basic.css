@@ -5,6 +5,9 @@
 #logo {
 	margin: 15px 15px 15px 0;
 }
+#hide {
+	display:none;
+}
 #container{
 	width:1000px;
 	margin:30px auto;
@@ -15,11 +18,14 @@ body{
 .editListItem {
 	display:none;
 }
+.editTodoItem {
+	display:none;
+}
 .hide{
 	display:none;
 }
 #newList{
-	margin:10px 0 10px 0;
+	margin:10px 0 20px 0;
 }
 .editing {
 	display:block;
@@ -27,11 +33,11 @@ body{
 #lists li {
 	list-style:none;
 }
+#todos li {
+	list-style:none;
+}
 hr {
 	margin:10px 0 10px 0;
-}
-.listItem {
-	
 }
 .listItem span:nth-child(2) {
 	font-size:20px;
@@ -40,16 +46,53 @@ hr {
 	margin: 5px 0 5px 0;
 	cursor:move;
 }
+#info{
+	display:none;
+}
 .listItem span:nth-child(1){
 	cursor:default;
 	clear:right;
 	width:50px;
 }
+.todoItem span:nth-child(2) {
+	font-size:20px;
+	line-height:1.5;
+	padding: 0 25px 0 25px;
+	margin: 5px 0 5px 0;
+	cursor:move;
+}
+.todoItem span:nth-child(1){
+	cursor:default;
+	clear:right;
+	width:50px;
+}
 #listContainer{
-	width:400px;
+	width:300px;
+	float:left;
+}
+#todoContainer{
+	float:left;
+	margin:194px 0 0 0;
+	padding-left:170px;	
+	width:300px;
+}
+#newTodo{
+	margin-bottom:20px;
 }
 #manual {
-	margin-top:20px;
+	clear:both;
+}
+#listsData {
+	margin-top:15px;
+	margin-bottom:40px;
+	color:#ccc;
+	padding:2px;
+}
+#todosData {
+	margin-top:15px;
+	margin-bottom:40px;
+	color:#ccc;
+	padding:2px;
 }
 .checked{
 	text-decoration:line-through;
