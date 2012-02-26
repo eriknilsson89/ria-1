@@ -1,0 +1,1 @@
+define(['Backbone'], function(Backbone){	ListModel = Backbone.Model.extend({        defaults: {            status: 'unchecked',        },    });	return ListModel}); 

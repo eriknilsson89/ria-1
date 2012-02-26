@@ -1,0 +1,1 @@
+ define(['Backbone'], function(Backbone){	TodoModel = Backbone.Model.extend({        defaults: {            status: 'unchecked',        },    });	return TodoModel}); 

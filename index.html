@@ -5,6 +5,7 @@
     <title>Basic Todolist</title>
     <meta name="author" content="Pontus Karlsson <bopontuskarlsson@hotmail.com>">
     <link rel="stylesheet" href="css/basic.css" media="screen, projection">
+	
   </head>
 		
   <body>
@@ -73,13 +74,8 @@
 		  <span><%= total %> todos finished</span>
 		  
     </script>
-	
-    <script src="lib/jquery.js"></script>
-	<script src="lib/jquery-ui.js"></script>
-    <script src="lib/underscore.js"></script>
-    <script src="lib/backbone.js"></script>
-	<script src="lib/localstorage.js"></script>
-    <script src="todolist.js"></script>
+	<script src="lib/jquery.js"></script>
+    <script type="text/javascript" src="lib/require.js" data-main="main"></script>
 	<script>
 		$("#manual img").click(function () {
 		  $("#info").slideToggle("slow");
