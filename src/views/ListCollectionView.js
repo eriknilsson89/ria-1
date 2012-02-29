@@ -9,6 +9,7 @@ define(['Backbone','Underscore',"jQuery","ListItemView"], function(Backbone,_,$,
         //Events
         events: {
             "keypress #newList": "createOnEnter",
+            "keyup #newList": "updateCounter",
             "click .listItem span:nth-child(2)": "showList" // flyttad till ListCollectionView
         },
 
@@ -72,12 +73,14 @@ define(['Backbone','Underscore',"jQuery","ListItemView"], function(Backbone,_,$,
         createOnEnter: function (e) {
             var title = $('#newList').val();
             if (!title || e.keyCode != 13) return;
+            if(title.length > 100)return;
             title = this.validate(title);
             this.collection.create({
                 title: title,
                 order: this.nextOrder()
             });
             this.$('#newList').val('');
+            $('#listCounter').html('100');
         },
         validate: function(string) {            if(string){
                var mydiv = document.createElement("div");
@@ -92,7 +95,16 @@ define(['Backbone','Underscore',"jQuery","ListItemView"], function(Backbone,_,$,
                 {
                     return mydiv.textContent;
                 }                           
-          }        }
+          }        },
+        updateCounter: function(e) {
+
+            //if not a enter push, then change counter
+            if(e.keyCode != 13){
+                var title = $('#newList').val();
+                var left = 100 - title.length;
+                $('#listCounter').html(left);
+            }
+        }
     });
 
 	return ListCollectionView;

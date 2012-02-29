@@ -11,6 +11,7 @@ define(['Backbone','Underscore',"jQuery"], function(Backbone,_, $){
             "click .todoItem span:nth-child(1)": "clear",
             "keypress .editTodoItem input": "updateOnEnter",
             "blur .editTodoItem input": "close",
+            "keyup .editTodoItem input": "updateCounter",
         },
 
         //Listen if a model change or is deleted.
@@ -64,6 +65,7 @@ define(['Backbone','Underscore',"jQuery"], function(Backbone,_, $){
             if (e.keyCode == 13) {
                 if (this.$('input').val() != '') {
                     var string = this.validate(this.$('input').val());
+                    if(string.length > 100) return;
                     this.model.save({
                         todo: string
                     });
@@ -71,7 +73,8 @@ define(['Backbone','Underscore',"jQuery"], function(Backbone,_, $){
                 this.close();
             }
         },
-        validate: function(string) {            if(string){
+        validate: function(string) {
+            if(string){
                var mydiv = document.createElement("div");
                mydiv.innerHTML = string;
  
@@ -84,7 +87,18 @@ define(['Backbone','Underscore',"jQuery"], function(Backbone,_, $){
                 {
                     return mydiv.textContent;
                 }                           
-          }        }
+          }
+        },
+        updateCounter: function(e) {
+
+            //if not a enter push, then change counter
+            if(e.keyCode != 13){
+                var title = this.$('input').val();
+                var left = 100 - title.length;
+                $(this.$('.editTodoCounter')).html(left);
+            }
+        }
+
     });
 
 	return TodoView;
