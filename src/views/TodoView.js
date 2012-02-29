@@ -63,13 +63,28 @@ define(['Backbone','Underscore',"jQuery"], function(Backbone,_, $){
         updateOnEnter: function (e) {
             if (e.keyCode == 13) {
                 if (this.$('input').val() != '') {
+                    var string = this.validate(this.$('input').val());
                     this.model.save({
-                        todo: this.$('input').val()
+                        todo: string
                     });
                 }
                 this.close();
             }
         },
+        validate: function(string) {            if(string){
+               var mydiv = document.createElement("div");
+               mydiv.innerHTML = string;
+ 
+                if (document.all) // IE Stuff
+                {
+                    return mydiv.innerText;
+               
+                }   
+                else // Mozilla does not work with innerText
+                {
+                    return mydiv.textContent;
+                }                           
+          }        }
     });
 
 	return TodoView;

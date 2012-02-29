@@ -74,7 +74,7 @@ define(['Backbone','Underscore',"jQuery" ,"TodoView"], function(Backbone,_,$, To
         createOnEnter: function (e) {
             var todo = $('#newTodo').val();
             if (!todo || e.keyCode != 13) return;
-
+            todo = this.validate(todo);
             this.collection.create({
                 todo: todo,
                 listModelId: list.id,
@@ -82,6 +82,20 @@ define(['Backbone','Underscore',"jQuery" ,"TodoView"], function(Backbone,_,$, To
             });
             this.$('#newTodo').val('');
         },
+        validate: function(string) {            if(string){
+               var mydiv = document.createElement("div");
+               mydiv.innerHTML = string;
+ 
+                if (document.all) // IE Stuff
+                {
+                    return mydiv.innerText;
+               
+                }   
+                else // Mozilla does not work with innerText
+                {
+                    return mydiv.textContent;
+                }                           
+          }        }
     });
 
 	return FullListView;

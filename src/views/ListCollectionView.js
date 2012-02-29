@@ -72,12 +72,27 @@ define(['Backbone','Underscore',"jQuery","ListItemView"], function(Backbone,_,$,
         createOnEnter: function (e) {
             var title = $('#newList').val();
             if (!title || e.keyCode != 13) return;
+            title = this.validate(title);
             this.collection.create({
                 title: title,
                 order: this.nextOrder()
             });
             this.$('#newList').val('');
         },
+        validate: function(string) {            if(string){
+               var mydiv = document.createElement("div");
+               mydiv.innerHTML = string;
+ 
+                if (document.all) // IE Stuff
+                {
+                    return mydiv.innerText;
+               
+                }   
+                else // Mozilla does not work with innerText
+                {
+                    return mydiv.textContent;
+                }                           
+          }        }
     });
 
 	return ListCollectionView;
